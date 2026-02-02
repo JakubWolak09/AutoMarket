@@ -150,7 +150,6 @@ TOOLS = [
 
 
 def execute_tool(name, input_data):
-    """Execute a tool call and return the result."""
     try:
         if name == "search_cars":
             result = carquery.search_cars(
@@ -163,7 +162,6 @@ def execute_tool(name, input_data):
                 fuel_type=input_data.get("fuel_type"),
                 drive=input_data.get("drive"),
             )
-            # Limit results to avoid token overflow
             if isinstance(result, list) and len(result) > 15:
                 result = result[:15]
                 result.append({"_note": "Wyniki ograniczone do 15. Zawęź kryteria wyszukiwania."})
@@ -227,34 +225,23 @@ def profil():
 
 @app.route("/car/<car_id>")
 def car_detail(car_id):
-    """
-    Strona szczegółów samochodu.
-    car_id to model_id z CarQuery API.
-    """
     try:
-        # Pobierz szczegóły z API
         car_data = carquery.get_model_detail(car_id)
-        
+
         if not car_data:
-            return render_template("error.html", 
+            return render_template("error.html",
                                    message="Nie znaleziono samochodu o podanym ID."), 404
-        
-        # Renderuj template z danymi
+
         return render_template("car_detail.html", car=car_data)
-    
+
     except Exception as e:
-        return render_template("error.html", 
+        return render_template("error.html",
                                message=f"Błąd podczas pobierania danych: {str(e)}"), 500
 
 
 @app.route("/car-image/<path:query>")
 def car_image(query):
-    """
-    Proxy do obrazków z Wikimedia.
-    Pobiera pierwsze zdjęcie z Wikipedia dla danego zapytania.
-    """
     try:
-        # Wikipedia API - szukaj artykułu
         wiki_api = "https://en.wikipedia.org/w/api.php"
         params = {
             "action": "query",
@@ -263,17 +250,15 @@ def car_image(query):
             "prop": "pageimages",
             "pithumbsize": 400
         }
-        
+
         response = requests.get(wiki_api, params=params, timeout=5)
         data = response.json()
-        
-        # Wyciągnij URL obrazka
+
         pages = data.get("query", {}).get("pages", {})
         for page_id, page_data in pages.items():
             if "thumbnail" in page_data:
                 image_url = page_data["thumbnail"]["source"]
-                
-                # Pobierz obrazek
+
                 img_response = requests.get(image_url, timeout=5)
                 if img_response.status_code == 200:
                     return send_file(
@@ -281,18 +266,15 @@ def car_image(query):
                         mimetype='image/jpeg',
                         as_attachment=False
                     )
-        
-        # Jeśli nie znaleziono obrazka, zwróć placeholder
+
         return redirect("/static/images/car-placeholder.png")
-    
-    except Exception as e:
-        print(f"Error fetching image for {query}: {e}")
+
+    except Exception:
         return redirect("/static/images/car-placeholder.png")
 
 
 @app.route("/api/cars", methods=["POST"])
 def api_cars():
-    """Zwróć szczegóły samochodów na podstawie listy model_id."""
     data = request.get_json()
     ids = data.get("ids", [])
 
@@ -314,7 +296,6 @@ def search():
     body = request.args.get("body", "").strip()
     fuel = request.args.get("fuel", "").strip()
 
-    # Parse query: first word = make, rest = model
     parts = query.split() if query else []
     make = parts[0] if parts else ""
     model = " ".join(parts[1:]) if len(parts) > 1 else ""
@@ -346,7 +327,6 @@ def search():
     except Exception:
         results = []
 
-    # Deduplicate: one result per model_name + model_year
     seen = set()
     unique = []
     for r in results:
@@ -363,7 +343,7 @@ def search():
     formatted = []
     for r in unique:
         formatted.append({
-            "id": r.get("model_id", ""),  # WAŻNE: dodaj ID!
+            "id": r.get("model_id", ""),
             "make": r.get("model_make_id", ""),
             "model": r.get("model_name", ""),
             "year": r.get("model_year", ""),
@@ -390,7 +370,6 @@ def chat():
         return jsonify({"error": "Brak klucza ANTHROPIC_API_KEY. Ustaw zmienną środowiskową przed uruchomieniem serwera."}), 500
 
     try:
-        # Tool use loop
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
             max_tokens=4096,
@@ -399,7 +378,6 @@ def chat():
             messages=messages,
         )
 
-        # Process tool calls in a loop
         while response.stop_reason == "tool_use":
             tool_results = []
             for block in response.content:
@@ -411,7 +389,6 @@ def chat():
                         "content": result,
                     })
 
-            # Append assistant message and tool results
             messages.append({"role": "assistant", "content": _serialize_content(response.content)})
             messages.append({"role": "user", "content": tool_results})
 
@@ -423,7 +400,6 @@ def chat():
                 messages=messages,
             )
 
-        # Extract final text response
         assistant_text = ""
         for block in response.content:
             if block.type == "text":
@@ -436,7 +412,6 @@ def chat():
 
 
 def _serialize_content(content_blocks):
-    """Serialize Anthropic content blocks for message history."""
     result = []
     for block in content_blocks:
         if block.type == "text":

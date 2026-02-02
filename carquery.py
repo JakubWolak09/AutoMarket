@@ -6,7 +6,6 @@ BASE_URL = "https://www.carqueryapi.com/api/0.3/"
 
 
 def _parse_jsonp(text):
-    """Parse JSONP response to plain JSON."""
     match = re.search(r'\((.*)\)', text, re.DOTALL)
     if match:
         return json.loads(match.group(1))
@@ -17,7 +16,6 @@ def _parse_jsonp(text):
 
 
 def _get(params):
-    """Make a request to CarQuery API and parse response."""
     params["callback"] = "cb"
     headers = {
         "User-Agent": "Mozilla/5.0",
@@ -29,7 +27,6 @@ def _get(params):
 
 
 def get_makes(year=None):
-    """Get list of car manufacturers, optionally filtered by year."""
     params = {"cmd": "getMakes"}
     if year:
         params["year"] = str(year)
@@ -40,7 +37,6 @@ def get_makes(year=None):
 
 
 def get_models(make, year=None, body=None):
-    """Get list of models for a given make."""
     params = {"cmd": "getModels", "make": make}
     if year:
         params["year"] = str(year)
@@ -53,7 +49,6 @@ def get_models(make, year=None, body=None):
 
 
 def get_trims(make, model, year=None):
-    """Get trim/technical data for a given make and model."""
     params = {"cmd": "getTrims", "make": make, "model": model}
     if year:
         params["year"] = str(year)
@@ -64,11 +59,9 @@ def get_trims(make, model, year=None):
 
 
 def get_model_detail(model_id):
-    """Get detailed specs for a specific model ID."""
     params = {"cmd": "getModel", "model": str(model_id)}
     data = _get(params)
     if data:
-        # API returns a list for getModel
         if isinstance(data, list) and data:
             return data[0]
         return data
@@ -77,7 +70,6 @@ def get_model_detail(model_id):
 
 def search_cars(make=None, model=None, year=None, body=None, min_power=None,
                 max_power=None, fuel_type=None, drive=None):
-    """Search cars with various filters. Returns trims matching criteria."""
     if not make:
         return {"error": "Podaj przynajmniej markę samochodu (make)."}
 
@@ -99,7 +91,6 @@ def search_cars(make=None, model=None, year=None, body=None, min_power=None,
 
     trims = data["Trims"]
 
-    # Filter by power if specified
     if min_power or max_power:
         filtered = []
         for t in trims:
@@ -120,7 +111,6 @@ def search_cars(make=None, model=None, year=None, body=None, min_power=None,
 
 
 def compare_cars(car_specs_list):
-    """Format comparison data for multiple cars (list of trim dicts)."""
     keys = [
         ("model_make_id", "Marka"),
         ("model_name", "Model"),
