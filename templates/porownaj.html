@@ -78,8 +78,9 @@
         ];
 
         function carImageUrl(make, model, year) {
-            const params = new URLSearchParams({make: make || '', model: model || '', year: year || ''});
-            return '/car-image?' + params.toString();
+            const family = (model || '').split(' ')[0];
+            const params = new URLSearchParams({customer:'hrjavascript-mastery', make:make||'', modelFamily:family, modelYear:year||'', angle:'23'});
+            return 'https://cdn.imagin.studio/getimage?' + params.toString();
         }
 
         async function loadComparison() {

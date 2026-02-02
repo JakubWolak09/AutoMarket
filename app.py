@@ -1,10 +1,9 @@
 import os
 import json
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 from anthropic import Anthropic
 import carquery
-import requests
 
 load_dotenv()
 
@@ -252,21 +251,6 @@ def car_detail(car_id):
                                message=f"Błąd podczas pobierania danych: {str(e)}"), 500
 
 
-@app.route("/car-image")
-def car_image():
-    make = request.args.get("make", "")
-    model = request.args.get("model", "")
-    year = request.args.get("year", "")
-    url = "https://cdn.imagin.studio/getimage"
-    params = {
-        "customer": "hrjavascript-mastery",
-        "make": make,
-        "modelFamily": model.split()[0] if model else "",
-        "modelYear": year,
-        "angle": "23",
-    }
-    query_string = "&".join(f"{k}={v}" for k, v in params.items() if v)
-    return redirect(f"{url}?{query_string}")
 
 
 @app.route("/api/cars", methods=["POST"])
