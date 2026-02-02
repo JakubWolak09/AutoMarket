@@ -223,6 +223,21 @@ def profil():
     return render_template("profil.html")
 
 
+@app.route("/ulubione")
+def ulubione():
+    return render_template("ulubione.html")
+
+
+@app.route("/sprzedaj")
+def sprzedaj():
+    return render_template("sprzedaj.html")
+
+
+@app.route("/porownaj")
+def porownaj():
+    return render_template("porownaj.html")
+
+
 @app.route("/car/<car_id>")
 def car_detail(car_id):
     try:
@@ -267,10 +282,10 @@ def car_image(query):
                         as_attachment=False
                     )
 
-        return redirect("/static/images/car-placeholder.png")
+        return redirect("/static/images/car-placeholder.svg")
 
     except Exception:
-        return redirect("/static/images/car-placeholder.png")
+        return redirect("/static/images/car-placeholder.svg")
 
 
 @app.route("/api/cars", methods=["POST"])
