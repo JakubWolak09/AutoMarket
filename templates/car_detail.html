@@ -21,7 +21,7 @@
 
     <!-- CAR IMAGE -->
     <div class="detail-image-wrap">
-        <img class="detail-image" src="/car-image/{{ car.get('model_make_id','') }} {{ car.get('model_name','') }}" alt="{{ car.get('model_make_id','') }} {{ car.get('model_name','') }}">
+        <img class="detail-image" src="/car-image?make={{ car.get('model_make_id','') }}&model={{ car.get('model_name','') }}&year={{ car.get('model_year','') }}" alt="{{ car.get('model_make_id','') }} {{ car.get('model_name','') }}">
     </div>
 
     <!-- CAR TITLE -->

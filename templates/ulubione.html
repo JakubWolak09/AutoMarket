@@ -57,20 +57,9 @@
         }
         function saveFavorites(favs) { localStorage.setItem('automarket_favorites', JSON.stringify(favs)); }
 
-        function makeWikiQuery(make, model) {
-            const map = {
-                'bmw': {'3 series':'BMW 3 Series (G20)','5 series':'BMW 5 Series','x3':'BMW X3','x5':'BMW X5'},
-                'toyota': {'corolla':'Toyota Corolla','camry':'Toyota Camry','rav4':'Toyota RAV4'},
-                'ford': {'mustang':'Ford Mustang','focus':'Ford Focus'},
-                'honda': {'civic':'Honda Civic','accord':'Honda Accord'},
-                'volkswagen': {'golf':'Volkswagen Golf','passat':'Volkswagen Passat','tiguan':'Volkswagen Tiguan'},
-                'audi': {'a3':'Audi A3','a4':'Audi A4','a6':'Audi A6','q5':'Audi Q5'},
-                'mercedes-benz': {'c-class':'Mercedes-Benz C-Class','e-class':'Mercedes-Benz E-Class'},
-            };
-            const mk = (make || '').toLowerCase();
-            const md = (model || '').toLowerCase();
-            if (map[mk] && map[mk][md]) return map[mk][md];
-            return (make || '') + ' ' + (model || '');
+        function carImageUrl(make, model, year) {
+            const params = new URLSearchParams({make: make || '', model: model || '', year: year || ''});
+            return '/car-image?' + params.toString();
         }
 
         async function loadFavorites() {
@@ -101,11 +90,10 @@
                         const model = car.model_name || '';
                         const year = car.model_year || '';
                         const id = car.model_id || '';
-                        const wikiQ = makeWikiQuery(make, model);
                         return `
                         <a href="/car/${id}" class="car-tile">
                             <div class="car-tile-img-wrap">
-                                <img class="car-tile-img" src="/car-image/${encodeURIComponent(wikiQ)}" alt="${make} ${model}" loading="lazy">
+                                <img class="car-tile-img" src="${carImageUrl(make, model, year)}" alt="${make} ${model}" loading="lazy">
                                 <button class="tile-fav-btn fav-active" data-id="${id}" title="Usun z ulubionych">&#9829;</button>
                             </div>
                             <div class="car-tile-label">${year} ${make} ${model}</div>

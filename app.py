@@ -5,8 +5,6 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 from anthropic import Anthropic
 import carquery
 import requests
-from io import BytesIO
-from flask import send_file
 
 load_dotenv()
 
@@ -254,38 +252,21 @@ def car_detail(car_id):
                                message=f"Błąd podczas pobierania danych: {str(e)}"), 500
 
 
-@app.route("/car-image/<path:query>")
-def car_image(query):
-    try:
-        wiki_api = "https://en.wikipedia.org/w/api.php"
-        params = {
-            "action": "query",
-            "format": "json",
-            "titles": query,
-            "prop": "pageimages",
-            "pithumbsize": 400
-        }
-
-        response = requests.get(wiki_api, params=params, timeout=5)
-        data = response.json()
-
-        pages = data.get("query", {}).get("pages", {})
-        for page_id, page_data in pages.items():
-            if "thumbnail" in page_data:
-                image_url = page_data["thumbnail"]["source"]
-
-                img_response = requests.get(image_url, timeout=5)
-                if img_response.status_code == 200:
-                    return send_file(
-                        BytesIO(img_response.content),
-                        mimetype='image/jpeg',
-                        as_attachment=False
-                    )
-
-        return redirect("/static/images/car-placeholder.svg")
-
-    except Exception:
-        return redirect("/static/images/car-placeholder.svg")
+@app.route("/car-image")
+def car_image():
+    make = request.args.get("make", "")
+    model = request.args.get("model", "")
+    year = request.args.get("year", "")
+    url = "https://cdn.imagin.studio/getimage"
+    params = {
+        "customer": "hrjavascript-mastery",
+        "make": make,
+        "modelFamily": model.split()[0] if model else "",
+        "modelYear": year,
+        "angle": "23",
+    }
+    query_string = "&".join(f"{k}={v}" for k, v in params.items() if v)
+    return redirect(f"{url}?{query_string}")
 
 
 @app.route("/api/cars", methods=["POST"])

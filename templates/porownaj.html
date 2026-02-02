@@ -77,17 +77,9 @@
             ['model_co2', 'CO2 [g/km]'],
         ];
 
-        function makeWikiQuery(make, model) {
-            const map = {
-                'bmw': {'3 series':'BMW 3 Series (G20)','5 series':'BMW 5 Series'},
-                'toyota': {'corolla':'Toyota Corolla','camry':'Toyota Camry'},
-                'ford': {'mustang':'Ford Mustang','focus':'Ford Focus'},
-                'audi': {'a4':'Audi A4','a6':'Audi A6'},
-            };
-            const mk = (make || '').toLowerCase();
-            const md = (model || '').toLowerCase();
-            if (map[mk] && map[mk][md]) return map[mk][md];
-            return (make || '') + ' ' + (model || '');
+        function carImageUrl(make, model, year) {
+            const params = new URLSearchParams({make: make || '', model: model || '', year: year || ''});
+            return '/car-image?' + params.toString();
         }
 
         async function loadComparison() {
@@ -126,10 +118,9 @@
                     const make = car.model_make_id || '';
                     const model = car.model_name || '';
                     const year = car.model_year || '';
-                    const wikiQ = makeWikiQuery(make, model);
                     html += `
                     <div class="compare-car-header">
-                        <img class="compare-car-img" src="/car-image/${encodeURIComponent(wikiQ)}" alt="${make} ${model}">
+                        <img class="compare-car-img" src="${carImageUrl(make, model, year)}" alt="${make} ${model}">
                         <div class="compare-car-name">${year} ${make} ${model}</div>
                     </div>`;
                 });
