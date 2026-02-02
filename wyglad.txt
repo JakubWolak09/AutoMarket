@@ -1,0 +1,358 @@
+OPIS EKRANU – „AUTOMARKET / ZNAJDŹ SWOJE AUTO”
+1️⃣ OGÓLNY STYL I UKŁAD
+
+Jasny motyw (light mode)
+
+Minimalistyczny, nowoczesny design
+
+Dużo „white space”
+
+Zaokrąglone karty (rounded corners)
+
+Kolor akcentu: niebieski
+
+Mobile-first (1 kolumna kart)
+
+2️⃣ GÓRNY PASEK (HEADER)
+🚗 Logo / Nazwa aplikacji
+
+Ikona samochodu w niebieskim kwadracie
+
+Tekst: AutoMarket
+
+Lewa strona nagłówka
+
+Klikalne – powrót na stronę główną
+
+🔔 Ikona powiadomień
+
+Dzwonek
+
+Czerwona kropka (badge) → są nowe powiadomienia
+
+Backend:
+
+zmiana ceny
+
+wiadomości od sprzedawcy
+
+rekomendacje AI
+
+👤 Avatar użytkownika
+
+Okrągła ikona
+
+Przejście do profilu
+
+3️⃣ NAGŁÓWEK STRONY
+🧭 Główny tekst:
+
+„Znajdź swoje auto”
+
+Duża, pogrubiona czcionka
+
+Funkcja: motywacja + jasny cel ekranu
+
+4️⃣ WYSZUKIWARKA SAMOCHODÓW (SEARCH BAR)
+🔍 Pole wyszukiwania
+
+Placeholder: „Szukaj marki, modelu…”
+
+Ikona lupy po lewej
+
+Ikona filtrów po prawej (sliders)
+
+Funkcjonalność:
+
+autocomplete (marka → model)
+
+obsługa fraz:
+
+„BMW diesel automat”
+
+„SUV do 120 tys”
+
+debounce (opóźnienie zapytań)
+
+połączone z AI (interpretacja intencji)
+
+5️⃣ FILTRY SZYBKIE (CHIPS)
+🔘 „Wszystkie”
+
+Aktywny (niebieski)
+
+Reset filtrów
+
+⚡ „Elektryczne”
+
+Filtr: fuel_type = electric
+
+🚙 „SUV-y”
+
+Filtr: body_type = SUV
+
+👉 Scroll poziomy
+👉 Backend: dynamiczne filtrowanie wyników
+
+6️⃣ LISTA OFERT (KARTY SAMOCHODÓW)
+📦 KARTA SAMOCHODU – STRUKTURA
+❤️ Ikona ulubionych
+
+Serduszko w prawym górnym rogu zdjęcia
+
+Toggle:
+
+zapis do „Ulubione”
+
+synchronizacja z kontem
+
+🖼 Zdjęcie pojazdu
+
+Główne zdjęcie oferty
+
+Proporcje 4:3
+
+Lazy loading
+
+🏷 Badge (opcjonalny)
+
+„OKAZJA”
+
+„NOWE”
+
+„TOP”
+
+Generowane przez backend / AI
+
+📄 Dane tekstowe (karta)
+Przykład: Tesla Model 3
+
+2021 Tesla Model 3
+
+Cena: 139 000 zł (kolor niebieski, duża czcionka)
+
+Metadane:
+
+🚗 Przebieg: 40 tys. km
+
+⚙ Skrzynia: Automat
+
+Przykład: Ford Bronco
+
+2022 Ford Bronco
+
+Cena: 115 000 zł
+
+🚗 19 tys. km
+
+🛞 4x4
+
+Przykład: BMW Seria 3
+
+2019 BMW Seria 3
+
+99 900 zł
+
+🚗 65 tys. km
+
+⚙ Automat
+
+Przykład: Honda CR-V
+
+2023 Honda CR-V
+
+128 500 zł
+
+🚗 8 tys. km
+
+⚙ Automat
+
+7️⃣ FLOATING ACTION BUTTON – AGENT AI
+💬 Ikona czatu (prawy dół)
+
+Okrągły przycisk
+
+Kolor niebieski
+
+Widoczny na każdej podstronie
+
+👉 Otwiera okienko agenta AI
+
+8️⃣ DOLNA NAWIGACJA (BOTTOM NAV)
+🏠 Główna
+
+Aktywna
+
+❤️ Ulubione
+
+Lista zapisanych ofert
+
+➕ Sprzedaj
+
+Dodawanie nowej oferty
+
+👤 Profil
+
+Konto użytkownika
+
+🚗 PODSTRONA POJEDYNCZEGO AUTA (SZCZEGÓŁY)
+Sekcje:
+1️⃣ Galeria zdjęć
+
+slider
+
+fullscreen
+
+min. 5 zdjęć
+
+2️⃣ Podstawowe informacje
+
+marka, model, rok
+
+cena
+
+lokalizacja
+
+dostępność
+
+3️⃣ Specyfikacja techniczna
+
+silnik
+
+paliwo
+
+skrzynia
+
+napęd
+
+moc
+
+spalanie
+
+norma emisji
+
+4️⃣ Historia pojazdu
+
+VIN (częściowo ukryty)
+
+liczba właścicieli
+
+bezwypadkowy / nieznany
+
+serwisowany
+
+5️⃣ Wyposażenie
+
+klimatyzacja
+
+tempomat
+
+asystenci
+
+multimedia
+
+bezpieczeństwo
+
+6️⃣ Analiza AI (UNIKAT!)
+
+Sekcja:
+
+🤖 Analiza eksperta AI
+
+„To auto pasuje do Ciebie, jeśli…”
+
+zalety
+
+wady
+
+porównanie do podobnych ofert
+
+„lepsze jeśli zwiększysz budżet o X”
+
+7️⃣ CTA
+
+„Zadzwoń”
+
+„Napisz do sprzedawcy”
+
+„Zarezerwuj”
+
+„Zapytaj AI o to auto”
+
+🔍 WYSZUKIWARKA – SZCZEGÓŁY
+Filtry zaawansowane:
+
+cena (min/max)
+
+rok
+
+przebieg
+
+paliwo
+
+skrzynia
+
+napęd
+
+liczba drzwi
+
+typ nadwozia
+
+Sortowanie:
+
+cena rosnąco/malejąco
+
+najnowsze
+
+przebieg
+
+rekomendowane (AI)
+
+🤖 OKIENKO AGENTA AI – FUNKCJONALNOŚĆ
+Co AI potrafi:
+
+„Znajdź SUV do 120 tys”
+
+„Porównaj BMW i Teslę”
+
+„Które auto ma najtańsze utrzymanie?”
+
+„Czy to auto jest warte tej ceny?”
+
+Dane wejściowe:
+
+historia wyszukiwań
+
+ulubione
+
+budżet
+
+lokalizacja
+
+Odpowiedzi AI:
+
+konkretne
+
+uzasadnione
+
+oparte na danych backendu
+
+z linkami do ofert
+
+🧠 CO TEN SYSTEM WYMAGA (TECHNICZNIE)
+
+system użytkowników
+
+system ofert
+
+system zdjęć
+
+system filtrów
+
+AI agent (LLM)
+
+silnik rekomendacji
+
+cache
+
+wyszukiwarka (Elastic / OpenSearch)

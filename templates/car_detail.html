@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{{ car.get('model_make_id','') }} {{ car.get('model_name','') }} - AutoMarket</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <script>(function(){var t=localStorage.getItem('automarket_theme');if(t==='dark')document.body.classList.add('dark');})()</script>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <a href="/" class="top-bar-back">&#8592;</a>
+        <h3 class="top-bar-title">{{ car.get('model_make_id','') }} {{ car.get('model_name','') }}</h3>
+        <button class="top-bar-action detail-fav-btn" id="detail-fav-btn"
+                data-id="{{ car.get('model_id','') }}"
+                data-name="{{ car.get('model_make_id','') }} {{ car.get('model_name','') }}"
+                data-year="{{ car.get('model_year','') }}">&#9825;</button>
+    </div>
+
+    <!-- CAR IMAGE -->
+    <div class="detail-image-wrap">
+        <img class="detail-image" src="/car-image/{{ car.get('model_make_id','') }} {{ car.get('model_name','') }}" alt="{{ car.get('model_make_id','') }} {{ car.get('model_name','') }}">
+    </div>
+
+    <!-- CAR TITLE -->
+    <div class="detail-header">
+        <h1 class="detail-title">{{ car.get('model_year','') }} {{ car.get('model_make_id','') }} {{ car.get('model_name','') }}</h1>
+        {% if car.get('model_trim') %}
+        <p class="detail-trim">{{ car.get('model_trim','') }}</p>
+        {% endif %}
+    </div>
+
+    <!-- QUICK SPECS -->
+    <div class="detail-quick-specs">
+        {% if car.get('model_engine_power_ps') %}
+        <div class="quick-spec">
+            <span class="quick-spec-value">{{ car.get('model_engine_power_ps') }}</span>
+            <span class="quick-spec-label">KM</span>
+        </div>
+        {% endif %}
+        {% if car.get('model_engine_torque_nm') %}
+        <div class="quick-spec">
+            <span class="quick-spec-value">{{ car.get('model_engine_torque_nm') }}</span>
+            <span class="quick-spec-label">Nm</span>
+        </div>
+        {% endif %}
+        {% if car.get('model_engine_cc') %}
+        <div class="quick-spec">
+            <span class="quick-spec-value">{{ car.get('model_engine_cc') }}</span>
+            <span class="quick-spec-label">cc</span>
+        </div>
+        {% endif %}
+        {% if car.get('model_top_speed_kph') %}
+        <div class="quick-spec">
+            <span class="quick-spec-value">{{ car.get('model_top_speed_kph') }}</span>
+            <span class="quick-spec-label">km/h</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- SPECS TABLE -->
+    <div class="detail-section">
+        <h3 class="detail-section-title">Dane techniczne</h3>
+        <div class="specs-table">
+            {% set specs = [
+                ('Marka', car.get('model_make_id','')),
+                ('Model', car.get('model_name','')),
+                ('Rok', car.get('model_year','')),
+                ('Wersja', car.get('model_trim','')),
+                ('Nadwozie', car.get('model_body','')),
+                ('Pozycja silnika', car.get('model_engine_position','')),
+                ('Typ silnika', car.get('model_engine_type','')),
+                ('Pojemnosc [cc]', car.get('model_engine_cc','')),
+                ('Cylindry', car.get('model_engine_cyl','')),
+                ('Zawory/cyl.', car.get('model_engine_valves_per_cyl','')),
+                ('Moc [KM]', car.get('model_engine_power_ps','')),
+                ('Moment obr. [Nm]', car.get('model_engine_torque_nm','')),
+                ('Stopien sprezania', car.get('model_engine_compression','')),
+                ('Paliwo', car.get('model_engine_fuel','')),
+                ('Naped', car.get('model_drive','')),
+                ('Skrzynia biegow', car.get('model_transmission_type','')),
+                ('Predkosc maks. [km/h]', car.get('model_top_speed_kph','')),
+                ('0-100 km/h [s]', car.get('model_0_to_100_kph','')),
+                ('Masa [kg]', car.get('model_weight_kg','')),
+                ('Dlugosc [mm]', car.get('model_length_mm','')),
+                ('Szerokosc [mm]', car.get('model_width_mm','')),
+                ('Wysokosc [mm]', car.get('model_height_mm','')),
+                ('Rozstaw osi [mm]', car.get('model_wheelbase_mm','')),
+                ('Zbiornik paliwa [l]', car.get('model_fuel_cap_l','')),
+                ('Drzwi', car.get('model_doors','')),
+                ('Miejsca', car.get('model_seats','')),
+                ('Zuzycie - miasto [l/100km]', car.get('model_lkm_city','')),
+                ('Zuzycie - trasa [l/100km]', car.get('model_lkm_hwy','')),
+                ('Zuzycie - mieszane [l/100km]', car.get('model_lkm_mixed','')),
+                ('CO2 [g/km]', car.get('model_co2','')),
+                ('Kraj producenta', car.get('make_country','')),
+            ] %}
+            {% for label, value in specs %}
+                {% if value %}
+                <div class="spec-row">
+                    <span class="spec-label">{{ label }}</span>
+                    <span class="spec-value">{{ value }}</span>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">&#127968;</span>
+            Glowna
+        </a>
+        <a href="/ulubione" class="nav-item">
+            <span class="nav-icon">&#10084;</span>
+            Ulubione
+        </a>
+        <a href="/sprzedaj" class="nav-item nav-item-sell">
+            <span class="nav-icon-plus">+</span>
+            Sprzedaj
+        </a>
+        <a href="/profil" class="nav-item">
+            <span class="nav-icon">&#128100;</span>
+            Profil
+        </a>
+    </nav>
+
+    <!-- CHAT FAB -->
+    <button class="chat-fab" id="chat-fab" title="Zapytaj doradce AI">&#128172;</button>
+
+    <!-- CHAT OVERLAY -->
+    <div class="chat-overlay" id="chat-overlay">
+        <div class="chat-header">
+            <h3>Doradca AI</h3>
+            <button class="chat-close" id="chat-close">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="msg assistant">
+                Czesc! Jestem Twoim doradca motoryzacyjnym. Moge pomoc Ci wyszukac, porownac i wybrac samochod. Powiedz mi, czego szukasz!
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <textarea class="chat-input" id="chat-input" placeholder="Napisz wiadomosc..." rows="1"></textarea>
+            <button class="chat-send" id="chat-send">&#10148;</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== FAVORITES =====
+        function getFavorites() {
+            try { return JSON.parse(localStorage.getItem('automarket_favorites') || '[]'); }
+            catch(e) { return []; }
+        }
+        function saveFavorites(favs) { localStorage.setItem('automarket_favorites', JSON.stringify(favs)); }
+        function isFavorite(id) { return getFavorites().some(f => f.id === String(id)); }
+
+        const detailFavBtn = document.getElementById('detail-fav-btn');
+        function updateDetailFav() {
+            if (isFavorite(detailFavBtn.dataset.id)) {
+                detailFavBtn.innerHTML = '&#9829;';
+                detailFavBtn.classList.add('fav-active');
+            } else {
+                detailFavBtn.innerHTML = '&#9825;';
+                detailFavBtn.classList.remove('fav-active');
+            }
+        }
+        detailFavBtn.addEventListener('click', () => {
+            const id = detailFavBtn.dataset.id;
+            let favs = getFavorites();
+            const idx = favs.findIndex(f => f.id === String(id));
+            if (idx >= 0) favs.splice(idx, 1);
+            else favs.push({ id: String(id), name: detailFavBtn.dataset.name, year: detailFavBtn.dataset.year });
+            saveFavorites(favs);
+            updateDetailFav();
+        });
+        updateDetailFav();
+
+        // ===== CHAT =====
+        const chatFab = document.getElementById('chat-fab');
+        const chatOverlay = document.getElementById('chat-overlay');
+        const chatClose = document.getElementById('chat-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        let conversationHistory = [];
+        let isLoading = false;
+
+        chatFab.addEventListener('click', () => { chatOverlay.classList.add('open'); chatInput.focus(); });
+        chatClose.addEventListener('click', () => { chatOverlay.classList.remove('open'); });
+
+        function scrollChat() { chatMessages.scrollTop = chatMessages.scrollHeight; }
+
+        function renderMarkdown(text) {
+            let h = text;
+            h = h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            h = h.replace(/^(\|.+\|)\n(\|\s*[-:]+[-| :]*\|)\n((\|.+\|\n?)*)/gm, function(m,hd,sp,bd){
+                const hs=hd.split('|').filter(c=>c.trim()).map(c=>`<th>${c.trim()}</th>`).join('');
+                const rs=bd.trim().split('\n').map(r=>{const cs=r.split('|').filter(c=>c.trim()).map(c=>`<td>${c.trim()}</td>`).join('');return`<tr>${cs}</tr>`;}).join('');
+                return`<table><thead><tr>${hs}</tr></thead><tbody>${rs}</tbody></table>`;
+            });
+            h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+            h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+            h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+            h=h.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');
+            h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+            h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');
+            h=h.replace(/`(.+?)`/g,'<code>$1</code>');
+            h=h.replace(/^[-*] (.+)$/gm,'<li>$1</li>');
+            h=h.replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>');
+            h=h.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+            h=h.replace(/\n\n/g,'</p><p>');
+            h=h.replace(/\n/g,'<br>');
+            if(!h.startsWith('<'))h='<p>'+h+'</p>';
+            return h;
+        }
+
+        function addMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.innerHTML = renderMarkdown(text);
+            chatMessages.appendChild(div);
+            scrollChat();
+        }
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg assistant'; div.id = 'typing-msg';
+            div.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(div); scrollChat();
+        }
+        function hideTyping() { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || isLoading) return;
+            isLoading = true; chatSend.disabled = true;
+            chatInput.value = ''; chatInput.style.height = 'auto';
+            addMsg('user', text);
+            conversationHistory.push({role:'user', content:text});
+            showTyping();
+            try {
+                const resp = await fetch('/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({messages:conversationHistory})});
+                const data = await resp.json(); hideTyping();
+                if (data.error) addMsg('assistant', 'Blad: ' + data.error);
+                else { addMsg('assistant', data.response); conversationHistory.push({role:'assistant', content:data.response}); }
+            } catch(err) { hideTyping(); addMsg('assistant', 'Nie udalo sie polaczyc z serwerem.'); }
+            isLoading = false; chatSend.disabled = false; chatInput.focus();
+        }
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }});
+        chatInput.addEventListener('input', () => { chatInput.style.height = 'auto'; chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px'; });
+
+        // ===== THEME TOGGLE (via top-bar gear) =====
+    </script>
+</body>
+</html>

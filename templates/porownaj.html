@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Porownanie - AutoMarket</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <script>(function(){var t=localStorage.getItem('automarket_theme');if(t==='dark')document.body.classList.add('dark');})()</script>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <a href="/" class="top-bar-back">&#8592;</a>
+        <h3 class="top-bar-title">Porownanie</h3>
+        <button class="share-btn" id="share-btn" title="Kopiuj link">&#128279;</button>
+    </div>
+
+    <!-- LOADING -->
+    <div class="fav-loading" id="cmp-loading" style="display:none;">
+        <div class="typing-indicator"><span></span><span></span><span></span></div>
+        <span>Laduje dane...</span>
+    </div>
+
+    <!-- ERROR -->
+    <div class="fav-empty" id="cmp-error" style="display:none;">
+        <p>Wybierz co najmniej 2 auta do porownania.</p>
+        <a href="/" class="fav-empty-link">Wroc do wyszukiwania</a>
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div class="compare-content" id="cmp-content" style="display:none;"></div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">&#127968;</span>
+            Glowna
+        </a>
+        <a href="/ulubione" class="nav-item">
+            <span class="nav-icon">&#10084;</span>
+            Ulubione
+        </a>
+        <a href="/sprzedaj" class="nav-item nav-item-sell">
+            <span class="nav-icon-plus">+</span>
+            Sprzedaj
+        </a>
+        <a href="/profil" class="nav-item">
+            <span class="nav-icon">&#128100;</span>
+            Profil
+        </a>
+    </nav>
+
+    <script>
+        const specLabels = [
+            ['model_make_id', 'Marka'],
+            ['model_name', 'Model'],
+            ['model_year', 'Rok'],
+            ['model_trim', 'Wersja'],
+            ['model_body', 'Nadwozie'],
+            ['model_engine_type', 'Typ silnika'],
+            ['model_engine_cc', 'Pojemnosc [cc]'],
+            ['model_engine_power_ps', 'Moc [KM]'],
+            ['model_engine_torque_nm', 'Moment [Nm]'],
+            ['model_drive', 'Naped'],
+            ['model_transmission_type', 'Skrzynia'],
+            ['model_top_speed_kph', 'V max [km/h]'],
+            ['model_0_to_100_kph', '0-100 [s]'],
+            ['model_weight_kg', 'Masa [kg]'],
+            ['model_length_mm', 'Dlugosc [mm]'],
+            ['model_width_mm', 'Szerokosc [mm]'],
+            ['model_height_mm', 'Wysokosc [mm]'],
+            ['model_fuel_cap_l', 'Zbiornik [l]'],
+            ['model_doors', 'Drzwi'],
+            ['model_seats', 'Miejsca'],
+            ['model_lkm_mixed', 'Spalanie [l/100km]'],
+            ['model_co2', 'CO2 [g/km]'],
+        ];
+
+        function makeWikiQuery(make, model) {
+            const map = {
+                'bmw': {'3 series':'BMW 3 Series (G20)','5 series':'BMW 5 Series'},
+                'toyota': {'corolla':'Toyota Corolla','camry':'Toyota Camry'},
+                'ford': {'mustang':'Ford Mustang','focus':'Ford Focus'},
+                'audi': {'a4':'Audi A4','a6':'Audi A6'},
+            };
+            const mk = (make || '').toLowerCase();
+            const md = (model || '').toLowerCase();
+            if (map[mk] && map[mk][md]) return map[mk][md];
+            return (make || '') + ' ' + (model || '');
+        }
+
+        async function loadComparison() {
+            const params = new URLSearchParams(window.location.search);
+            const idsStr = params.get('ids');
+            const loading = document.getElementById('cmp-loading');
+            const error = document.getElementById('cmp-error');
+            const content = document.getElementById('cmp-content');
+
+            if (!idsStr) { error.style.display = 'block'; return; }
+            const ids = idsStr.split(',').filter(Boolean);
+            if (ids.length < 2) { error.style.display = 'block'; return; }
+
+            loading.style.display = 'flex';
+
+            try {
+                const resp = await fetch('/api/cars', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ids: ids })
+                });
+                const data = await resp.json();
+                loading.style.display = 'none';
+
+                if (!data.cars || data.cars.length < 2) {
+                    error.style.display = 'block';
+                    return;
+                }
+
+                const cars = data.cars;
+                let html = '';
+
+                // Car headers with images
+                html += '<div class="compare-headers">';
+                cars.forEach(car => {
+                    const make = car.model_make_id || '';
+                    const model = car.model_name || '';
+                    const year = car.model_year || '';
+                    const wikiQ = makeWikiQuery(make, model);
+                    html += `
+                    <div class="compare-car-header">
+                        <img class="compare-car-img" src="/car-image/${encodeURIComponent(wikiQ)}" alt="${make} ${model}">
+                        <div class="compare-car-name">${year} ${make} ${model}</div>
+                    </div>`;
+                });
+                html += '</div>';
+
+                // Spec rows
+                html += '<div class="compare-table">';
+                specLabels.forEach(([key, label]) => {
+                    const values = cars.map(c => c[key] || '-');
+                    if (values.every(v => v === '-')) return;
+                    html += `<div class="compare-row">`;
+                    html += `<div class="compare-label">${label}</div>`;
+                    html += `<div class="compare-values">`;
+                    values.forEach(v => {
+                        html += `<div class="compare-value">${v}</div>`;
+                    });
+                    html += `</div></div>`;
+                });
+                html += '</div>';
+
+                content.innerHTML = html;
+                content.style.display = 'block';
+            } catch(err) {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                error.querySelector('p').textContent = 'Blad ladowania danych: ' + err.message;
+            }
+        }
+
+        loadComparison();
+
+        // ===== SHARE LINK =====
+        document.getElementById('share-btn').addEventListener('click', function() {
+            const btn = this;
+            const url = window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    btn.innerHTML = '&#10003;';
+                    btn.classList.add('copied');
+                    setTimeout(() => { btn.innerHTML = '&#128279;'; btn.classList.remove('copied'); }, 2000);
+                });
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                btn.innerHTML = '&#10003;';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.innerHTML = '&#128279;'; btn.classList.remove('copied'); }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

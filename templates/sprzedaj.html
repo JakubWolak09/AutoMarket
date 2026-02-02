@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sprzedaj - AutoMarket</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <script>(function(){var t=localStorage.getItem('automarket_theme');if(t==='dark')document.body.classList.add('dark');})()</script>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <a href="/" class="top-bar-back">&#8592;</a>
+        <h3 class="top-bar-title">Sprzedaj auto</h3>
+        <button class="theme-toggle" id="theme-toggle" title="Zmien motyw">&#127769;</button>
+    </div>
+
+    <!-- FORM -->
+    <div class="sell-form" id="sell-form">
+        <div class="sell-form-row">
+            <div class="sell-form-group">
+                <label class="sell-form-label">Marka <span class="required">*</span></label>
+                <input type="text" class="sell-form-input" id="sell-make" placeholder="np. Toyota" required>
+            </div>
+            <div class="sell-form-group">
+                <label class="sell-form-label">Model <span class="required">*</span></label>
+                <input type="text" class="sell-form-input" id="sell-model" placeholder="np. Corolla" required>
+            </div>
+        </div>
+
+        <div class="sell-form-row">
+            <div class="sell-form-group">
+                <label class="sell-form-label">Rok <span class="required">*</span></label>
+                <input type="number" class="sell-form-input" id="sell-year" placeholder="np. 2020" min="1950" max="2026" required>
+            </div>
+            <div class="sell-form-group">
+                <label class="sell-form-label">Cena (PLN) <span class="required">*</span></label>
+                <input type="number" class="sell-form-input" id="sell-price" placeholder="np. 85000" min="0" required>
+            </div>
+        </div>
+
+        <div class="sell-form-row">
+            <div class="sell-form-group">
+                <label class="sell-form-label">Typ nadwozia</label>
+                <select class="sell-form-select" id="sell-body">
+                    <option value="">-- Wybierz --</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Kombi">Kombi</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Coupe">Coupe</option>
+                    <option value="Kabriolet">Kabriolet</option>
+                    <option value="Van">Van</option>
+                </select>
+            </div>
+            <div class="sell-form-group">
+                <label class="sell-form-label">Paliwo</label>
+                <select class="sell-form-select" id="sell-fuel">
+                    <option value="">-- Wybierz --</option>
+                    <option value="Benzyna">Benzyna</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Hybryda">Hybryda</option>
+                    <option value="Elektryczny">Elektryczny</option>
+                    <option value="LPG">LPG</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sell-form-group">
+            <label class="sell-form-label">Przebieg (km)</label>
+            <input type="number" class="sell-form-input" id="sell-mileage" placeholder="np. 120000" min="0">
+        </div>
+
+        <div class="sell-form-group">
+            <label class="sell-form-label">Opis</label>
+            <textarea class="sell-form-textarea" id="sell-desc" placeholder="Opisz swoj samochod..."></textarea>
+        </div>
+
+        <div class="sell-form-group">
+            <label class="sell-form-label">Zdjecia (max 5)</label>
+            <div class="sell-photos-area" id="photos-area">
+                <label class="sell-photo-add" id="photo-add-label">
+                    <span class="sell-photo-add-icon">+</span>
+                    <span>Dodaj</span>
+                    <input type="file" accept="image/*" multiple id="photo-input" style="display:none;">
+                </label>
+            </div>
+        </div>
+
+        <button class="sell-submit-btn" id="sell-submit">Dodaj ogloszenie</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="sell-success" id="sell-success" style="display:none;">
+        <div class="sell-success-icon">&#9989;</div>
+        <h2>Ogloszenie dodane!</h2>
+        <p>Twoje ogloszenie zostalo zapisane.</p>
+        <div class="sell-success-actions">
+            <button class="sell-success-btn sell-success-btn-primary" id="add-another">Dodaj kolejne</button>
+            <a href="/profil" class="sell-success-btn sell-success-btn-secondary">Zobacz w profilu</a>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">&#127968;</span>
+            Glowna
+        </a>
+        <a href="/ulubione" class="nav-item">
+            <span class="nav-icon">&#10084;</span>
+            Ulubione
+        </a>
+        <a href="/sprzedaj" class="nav-item nav-item-sell active">
+            <span class="nav-icon-plus">+</span>
+            Sprzedaj
+        </a>
+        <a href="/profil" class="nav-item">
+            <span class="nav-icon">&#128100;</span>
+            Profil
+        </a>
+    </nav>
+
+    <script>
+        // ===== THEME TOGGLE =====
+        const themeToggle = document.getElementById('theme-toggle');
+        function updateThemeIcon() {
+            themeToggle.innerHTML = document.body.classList.contains('dark') ? '&#9728;' : '&#127769;';
+        }
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('automarket_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeIcon();
+        });
+        updateThemeIcon();
+
+        // ===== PHOTO HANDLING =====
+        const photoInput = document.getElementById('photo-input');
+        const photosArea = document.getElementById('photos-area');
+        const photoAddLabel = document.getElementById('photo-add-label');
+        let photos = []; // base64 strings
+
+        photoInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            const remaining = 5 - photos.length;
+            const toAdd = files.slice(0, remaining);
+
+            toAdd.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    if (photos.length >= 5) return;
+                    photos.push(ev.target.result);
+                    renderPhotos();
+                };
+                reader.readAsDataURL(file);
+            });
+
+            photoInput.value = '';
+        });
+
+        function renderPhotos() {
+            // Remove existing previews
+            photosArea.querySelectorAll('.sell-photo-preview').forEach(el => el.remove());
+
+            photos.forEach((src, idx) => {
+                const div = document.createElement('div');
+                div.className = 'sell-photo-preview';
+                div.innerHTML = `<img src="${src}" alt=""><button class="sell-photo-remove" data-idx="${idx}">&times;</button>`;
+                photosArea.insertBefore(div, photoAddLabel);
+            });
+
+            // Hide add button if 5 photos
+            photoAddLabel.style.display = photos.length >= 5 ? 'none' : '';
+        }
+
+        photosArea.addEventListener('click', (e) => {
+            const btn = e.target.closest('.sell-photo-remove');
+            if (btn) {
+                e.preventDefault();
+                const idx = parseInt(btn.dataset.idx);
+                photos.splice(idx, 1);
+                renderPhotos();
+            }
+        });
+
+        // ===== FORM SUBMIT =====
+        function getListings() {
+            try { return JSON.parse(localStorage.getItem('automarket_listings') || '[]'); }
+            catch(e) { return []; }
+        }
+        function saveListings(list) { localStorage.setItem('automarket_listings', JSON.stringify(list)); }
+
+        document.getElementById('sell-submit').addEventListener('click', () => {
+            const make = document.getElementById('sell-make').value.trim();
+            const model = document.getElementById('sell-model').value.trim();
+            const year = document.getElementById('sell-year').value.trim();
+            const price = document.getElementById('sell-price').value.trim();
+
+            if (!make || !model || !year || !price) {
+                alert('Wypelnij wszystkie wymagane pola (marka, model, rok, cena).');
+                return;
+            }
+
+            const listing = {
+                id: Date.now().toString(),
+                make,
+                model,
+                year,
+                price,
+                body: document.getElementById('sell-body').value,
+                fuel: document.getElementById('sell-fuel').value,
+                mileage: document.getElementById('sell-mileage').value.trim(),
+                description: document.getElementById('sell-desc').value.trim(),
+                photos: photos.slice(),
+                createdAt: new Date().toISOString(),
+            };
+
+            const listings = getListings();
+            listings.unshift(listing);
+            saveListings(listings);
+
+            // Show success
+            document.getElementById('sell-form').style.display = 'none';
+            document.getElementById('sell-success').style.display = '';
+        });
+
+        document.getElementById('add-another').addEventListener('click', () => {
+            // Reset form
+            document.getElementById('sell-make').value = '';
+            document.getElementById('sell-model').value = '';
+            document.getElementById('sell-year').value = '';
+            document.getElementById('sell-price').value = '';
+            document.getElementById('sell-body').value = '';
+            document.getElementById('sell-fuel').value = '';
+            document.getElementById('sell-mileage').value = '';
+            document.getElementById('sell-desc').value = '';
+            photos = [];
+            renderPhotos();
+            document.getElementById('sell-success').style.display = 'none';
+            document.getElementById('sell-form').style.display = '';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AutoMarket - Profil</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <script>(function(){var t=localStorage.getItem('automarket_theme');if(t==='dark')document.body.classList.add('dark');})()</script>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <a href="/" class="top-bar-back">&#8592;</a>
+        <h3 class="top-bar-title">Profil</h3>
+        <button class="theme-toggle" id="theme-toggle" title="Zmien motyw">&#127769;</button>
+    </div>
+
+    <!-- HERO -->
+    <div class="profile-hero">
+        <div class="profile-avatar-wrap">
+            <div class="profile-avatar">AJ</div>
+            <button class="avatar-edit-btn">&#9998;</button>
+        </div>
+        <h2 class="profile-name">Alex Johnson</h2>
+        <p class="profile-since">Członek od 2023</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="profile-stats">
+        <div class="stat-card">
+            <div class="stat-number">2</div>
+            <div class="stat-label">Ogłoszenia</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">14</div>
+            <div class="stat-label">Zapisane</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">350</div>
+            <div class="stat-label">Wyświetlenia</div>
+        </div>
+    </div>
+
+    <!-- AI ASSISTANT CARD -->
+    <div class="ai-card" id="open-ai-chat">
+        <div class="ai-card-icon">&#129302;</div>
+        <div class="ai-card-text">
+            <div class="ai-card-title">Asystent AI</div>
+            <div class="ai-card-desc">Zarządzaj preferencjami i historią</div>
+        </div>
+        <span class="ai-card-arrow">&#8250;</span>
+    </div>
+
+    <!-- MY LISTINGS -->
+    <div class="profile-section">
+        <h4 class="profile-section-title">Moje ogłoszenia</h4>
+        <div id="my-listings-container"></div>
+    </div>
+
+    <!-- ACTIVITY SECTION -->
+    <div class="profile-section">
+        <h4 class="profile-section-title">Aktywność</h4>
+
+        <a href="/sprzedaj" class="profile-menu-item">
+            <span class="menu-icon">&#128663;</span>
+            <span class="menu-text">Dodaj ogłoszenie</span>
+            <span class="menu-arrow">&#8250;</span>
+        </a>
+
+        <a href="#" class="profile-menu-item">
+            <span class="menu-icon">&#10084;</span>
+            <span class="menu-text">Zapisane auta</span>
+            <span class="menu-arrow">&#8250;</span>
+        </a>
+
+        <a href="#" class="profile-menu-item">
+            <span class="menu-icon">&#128172;</span>
+            <span class="menu-text">Wiadomości</span>
+            <span class="menu-badge menu-badge-blue">3</span>
+            <span class="menu-arrow">&#8250;</span>
+        </a>
+    </div>
+
+    <!-- ACCOUNT SECTION -->
+    <div class="profile-section">
+        <h4 class="profile-section-title">Konto</h4>
+
+        <a href="#" class="profile-menu-item">
+            <span class="menu-icon">&#9881;</span>
+            <span class="menu-text">Ustawienia konta</span>
+            <span class="menu-arrow">&#8250;</span>
+        </a>
+
+        <a href="#" class="profile-menu-item">
+            <span class="menu-icon">&#128276;</span>
+            <span class="menu-text">Powiadomienia</span>
+            <span class="menu-arrow">&#8250;</span>
+        </a>
+
+        <a href="#" class="profile-menu-item">
+            <span class="menu-icon">&#128274;</span>
+            <span class="menu-text">Prywatność i bezpieczeństwo</span>
+            <span class="menu-arrow">&#8250;</span>
+        </a>
+    </div>
+
+    <!-- LOGOUT -->
+    <div class="profile-section">
+        <button class="logout-btn" id="logout-btn">Wyloguj się</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="profile-footer">
+        Wersja aplikacji: 2.4.0
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">&#127968;</span>
+            Główna
+        </a>
+        <a href="/ulubione" class="nav-item">
+            <span class="nav-icon">&#10084;</span>
+            Ulubione
+        </a>
+        <a href="/sprzedaj" class="nav-item nav-item-sell">
+            <span class="nav-icon-plus">+</span>
+            Sprzedaj
+        </a>
+        <a href="/profil" class="nav-item active">
+            <span class="nav-icon">&#128100;</span>
+            Profil
+        </a>
+    </nav>
+
+    <!-- CHAT FAB -->
+    <button class="chat-fab" id="chat-fab" title="Zapytaj doradcę AI">&#128172;</button>
+
+    <!-- CHAT OVERLAY -->
+    <div class="chat-overlay" id="chat-overlay">
+        <div class="chat-header">
+            <h3>Doradca AI</h3>
+            <button class="chat-close" id="chat-close">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="msg assistant">
+                Cześć! Jestem Twoim doradcą motoryzacyjnym. Mogę pomóc Ci wyszukać, porównać i wybrać samochód. Powiedz mi, czego szukasz!
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <textarea class="chat-input" id="chat-input" placeholder="Napisz wiadomość..." rows="1"></textarea>
+            <button class="chat-send" id="chat-send">&#10148;</button>
+        </div>
+    </div>
+
+    <!-- LOGOUT MODAL -->
+    <div class="modal-overlay" id="logout-modal">
+        <div class="modal-box">
+            <h3>Wylogować się?</h3>
+            <p>Czy na pewno chcesz się wylogować?</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="logout-cancel">Anuluj</button>
+                <button class="modal-btn modal-btn-confirm" id="logout-confirm">Wyloguj</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CHAT (same logic) =====
+        const chatFab = document.getElementById('chat-fab');
+        const chatOverlay = document.getElementById('chat-overlay');
+        const chatClose = document.getElementById('chat-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+
+        let conversationHistory = [];
+        let isLoading = false;
+
+        chatFab.addEventListener('click', () => {
+            chatOverlay.classList.add('open');
+            chatInput.focus();
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatOverlay.classList.remove('open');
+        });
+
+        function scrollChat() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function renderMarkdown(text) {
+            let h = text;
+            h = h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            h = h.replace(/^(\|.+\|)\n(\|\s*[-:]+[-| :]*\|)\n((\|.+\|\n?)*)/gm, function(m,hd,sp,bd){
+                const hs=hd.split('|').filter(c=>c.trim()).map(c=>`<th>${c.trim()}</th>`).join('');
+                const rs=bd.trim().split('\n').map(r=>{const cs=r.split('|').filter(c=>c.trim()).map(c=>`<td>${c.trim()}</td>`).join('');return`<tr>${cs}</tr>`;}).join('');
+                return`<table><thead><tr>${hs}</tr></thead><tbody>${rs}</tbody></table>`;
+            });
+            h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+            h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+            h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+            h=h.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');
+            h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+            h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');
+            h=h.replace(/`(.+?)`/g,'<code>$1</code>');
+            h=h.replace(/^[-*] (.+)$/gm,'<li>$1</li>');
+            h=h.replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>');
+            h=h.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+            h=h.replace(/\n\n/g,'</p><p>');
+            h=h.replace(/\n/g,'<br>');
+            if(!h.startsWith('<'))h='<p>'+h+'</p>';
+            return h;
+        }
+
+        function addMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.innerHTML = renderMarkdown(text);
+            chatMessages.appendChild(div);
+            scrollChat();
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg assistant';
+            div.id = 'typing-msg';
+            div.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(div);
+            scrollChat();
+        }
+
+        function hideTyping() {
+            const el = document.getElementById('typing-msg');
+            if (el) el.remove();
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || isLoading) return;
+
+            isLoading = true;
+            chatSend.disabled = true;
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            addMsg('user', text);
+            conversationHistory.push({ role: 'user', content: text });
+            showTyping();
+
+            try {
+                const resp = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: conversationHistory }),
+                });
+                const data = await resp.json();
+                hideTyping();
+                if (data.error) {
+                    addMsg('assistant', 'Błąd: ' + data.error);
+                } else {
+                    addMsg('assistant', data.response);
+                    conversationHistory.push({ role: 'assistant', content: data.response });
+                }
+            } catch (err) {
+                hideTyping();
+                addMsg('assistant', 'Nie udało się połączyć z serwerem.');
+            }
+
+            isLoading = false;
+            chatSend.disabled = false;
+            chatInput.focus();
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        });
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+        });
+
+        // ===== AI card opens chat =====
+        document.getElementById('open-ai-chat').addEventListener('click', () => {
+            chatOverlay.classList.add('open');
+            chatInput.focus();
+        });
+
+        // ===== LOGOUT MODAL =====
+        const logoutModal = document.getElementById('logout-modal');
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            logoutModal.classList.add('open');
+        });
+        document.getElementById('logout-cancel').addEventListener('click', () => {
+            logoutModal.classList.remove('open');
+        });
+        document.getElementById('logout-confirm').addEventListener('click', () => {
+            logoutModal.classList.remove('open');
+            window.location.href = '/';
+        });
+
+        // ===== THEME TOGGLE =====
+        const themeToggle = document.getElementById('theme-toggle');
+        function updateThemeIcon() {
+            themeToggle.innerHTML = document.body.classList.contains('dark') ? '&#9728;' : '&#127769;';
+        }
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('automarket_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeIcon();
+        });
+        updateThemeIcon();
+
+        // ===== MY LISTINGS =====
+        function getListings() {
+            try { return JSON.parse(localStorage.getItem('automarket_listings') || '[]'); }
+            catch(e) { return []; }
+        }
+        function saveListings(list) { localStorage.setItem('automarket_listings', JSON.stringify(list)); }
+
+        function renderListings() {
+            const container = document.getElementById('my-listings-container');
+            const listings = getListings();
+            if (listings.length === 0) {
+                container.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);padding:8px 0;">Nie masz jeszcze ogłoszeń. <a href="/sprzedaj" style="color:var(--accent);text-decoration:none;">Dodaj pierwsze</a></p>';
+                return;
+            }
+            container.innerHTML = listings.map((item, idx) => {
+                const imgHtml = item.photos && item.photos.length > 0
+                    ? '<img class="my-listing-img" src="' + item.photos[0] + '" alt="">'
+                    : '<div class="my-listing-img-placeholder">&#128663;</div>';
+                return '<div class="my-listing-card">' +
+                    imgHtml +
+                    '<div class="my-listing-info">' +
+                        '<div class="my-listing-name">' + (item.year ? item.year + ' ' : '') + (item.make || '') + ' ' + (item.model || '') + '</div>' +
+                        '<div class="my-listing-meta">' + (item.body || '') + (item.fuel ? ' &middot; ' + item.fuel : '') + (item.mileage ? ' &middot; ' + Number(item.mileage).toLocaleString() + ' km' : '') + '</div>' +
+                        '<div class="my-listing-price">' + (item.price ? Number(item.price).toLocaleString() + ' PLN' : '') + '</div>' +
+                    '</div>' +
+                    '<button class="my-listing-delete" data-idx="' + idx + '" title="Usun">&times;</button>' +
+                '</div>';
+            }).join('');
+        }
+
+        document.getElementById('my-listings-container').addEventListener('click', e => {
+            const btn = e.target.closest('.my-listing-delete');
+            if (btn) {
+                const idx = parseInt(btn.dataset.idx);
+                const listings = getListings();
+                listings.splice(idx, 1);
+                saveListings(listings);
+                renderListings();
+            }
+        });
+
+        renderListings();
+    </script>
+</body>
+</html>

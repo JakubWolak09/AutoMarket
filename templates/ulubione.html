@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Ulubione - AutoMarket</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <script>(function(){var t=localStorage.getItem('automarket_theme');if(t==='dark')document.body.classList.add('dark');})()</script>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <a href="/" class="top-bar-back">&#8592;</a>
+        <h3 class="top-bar-title">Ulubione</h3>
+        <button class="theme-toggle" id="theme-toggle" title="Zmien motyw">&#127769;</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="fav-loading" id="fav-loading" style="display:none;">
+        <div class="typing-indicator"><span></span><span></span><span></span></div>
+        <span>Laduje ulubione...</span>
+    </div>
+
+    <div class="fav-empty" id="fav-empty" style="display:none;">
+        <div class="fav-empty-icon">&#10084;</div>
+        <p>Nie masz jeszcze ulubionych aut.</p>
+        <a href="/" class="fav-empty-link">Przejdz do wyszukiwania</a>
+    </div>
+
+    <div class="car-grid" id="fav-grid" style="padding-top:16px;"></div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">&#127968;</span>
+            Glowna
+        </a>
+        <a href="/ulubione" class="nav-item active">
+            <span class="nav-icon">&#10084;</span>
+            Ulubione
+        </a>
+        <a href="/sprzedaj" class="nav-item nav-item-sell">
+            <span class="nav-icon-plus">+</span>
+            Sprzedaj
+        </a>
+        <a href="/profil" class="nav-item">
+            <span class="nav-icon">&#128100;</span>
+            Profil
+        </a>
+    </nav>
+
+    <script>
+        function getFavorites() {
+            try { return JSON.parse(localStorage.getItem('automarket_favorites') || '[]'); }
+            catch(e) { return []; }
+        }
+        function saveFavorites(favs) { localStorage.setItem('automarket_favorites', JSON.stringify(favs)); }
+
+        function makeWikiQuery(make, model) {
+            const map = {
+                'bmw': {'3 series':'BMW 3 Series (G20)','5 series':'BMW 5 Series','x3':'BMW X3','x5':'BMW X5'},
+                'toyota': {'corolla':'Toyota Corolla','camry':'Toyota Camry','rav4':'Toyota RAV4'},
+                'ford': {'mustang':'Ford Mustang','focus':'Ford Focus'},
+                'honda': {'civic':'Honda Civic','accord':'Honda Accord'},
+                'volkswagen': {'golf':'Volkswagen Golf','passat':'Volkswagen Passat','tiguan':'Volkswagen Tiguan'},
+                'audi': {'a3':'Audi A3','a4':'Audi A4','a6':'Audi A6','q5':'Audi Q5'},
+                'mercedes-benz': {'c-class':'Mercedes-Benz C-Class','e-class':'Mercedes-Benz E-Class'},
+            };
+            const mk = (make || '').toLowerCase();
+            const md = (model || '').toLowerCase();
+            if (map[mk] && map[mk][md]) return map[mk][md];
+            return (make || '') + ' ' + (model || '');
+        }
+
+        async function loadFavorites() {
+            const favs = getFavorites();
+            const grid = document.getElementById('fav-grid');
+            const empty = document.getElementById('fav-empty');
+            const loading = document.getElementById('fav-loading');
+
+            if (favs.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+
+            loading.style.display = 'flex';
+
+            try {
+                const resp = await fetch('/api/cars', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ids: favs.map(f => f.id) })
+                });
+                const data = await resp.json();
+                loading.style.display = 'none';
+
+                if (data.cars && data.cars.length > 0) {
+                    grid.innerHTML = data.cars.map(car => {
+                        const make = car.model_make_id || '';
+                        const model = car.model_name || '';
+                        const year = car.model_year || '';
+                        const id = car.model_id || '';
+                        const wikiQ = makeWikiQuery(make, model);
+                        return `
+                        <a href="/car/${id}" class="car-tile">
+                            <div class="car-tile-img-wrap">
+                                <img class="car-tile-img" src="/car-image/${encodeURIComponent(wikiQ)}" alt="${make} ${model}" loading="lazy">
+                                <button class="tile-fav-btn fav-active" data-id="${id}" title="Usun z ulubionych">&#9829;</button>
+                            </div>
+                            <div class="car-tile-label">${year} ${make} ${model}</div>
+                        </a>`;
+                    }).join('');
+                } else {
+                    // IDs in localStorage but not found in API
+                    empty.style.display = 'block';
+                }
+            } catch(err) {
+                loading.style.display = 'none';
+                empty.style.display = 'block';
+                empty.querySelector('p').textContent = 'Blad ladowania ulubionych.';
+            }
+        }
+
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.tile-fav-btn');
+            if (btn) {
+                e.preventDefault(); e.stopPropagation();
+                const id = btn.dataset.id;
+                let favs = getFavorites();
+                favs = favs.filter(f => f.id !== String(id));
+                saveFavorites(favs);
+                const tile = btn.closest('.car-tile');
+                if (tile) tile.remove();
+                if (getFavorites().length === 0) {
+                    document.getElementById('fav-empty').style.display = 'block';
+                }
+            }
+        });
+
+        loadFavorites();
+
+        // ===== THEME TOGGLE =====
+        const themeToggle = document.getElementById('theme-toggle');
+        function updateThemeIcon() {
+            themeToggle.innerHTML = document.body.classList.contains('dark') ? '&#9728;' : '&#127769;';
+        }
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('automarket_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeIcon();
+        });
+        updateThemeIcon();
+    </script>
+</body>
+</html>

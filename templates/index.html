@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AutoMarket</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <script>(function(){var t=localStorage.getItem('automarket_theme');if(t==='dark')document.body.classList.add('dark');})()</script>
+
+    <!-- HEADER -->
+    <div class="header">
+        <a href="/" class="header-logo">
+            <div class="logo-icon">&#128663;</div>
+            <span class="logo-text">AutoMarket</span>
+        </a>
+        <div class="header-right">
+            <button class="theme-toggle" id="theme-toggle" title="Zmien motyw">&#127769;</button>
+            <button class="header-bell" id="bell-btn">
+                &#128276;
+                <span class="bell-badge"></span>
+            </button>
+            <a href="/profil" class="header-avatar">
+                <span>M</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- PAGE HEADING -->
+    <div class="page-heading">
+        <h1>Znajdz swoje auto</h1>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-bar">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" class="search-input" id="search-input" placeholder="Szukaj marki, modelu...">
+        <button class="filter-btn" id="filter-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="8" y1="12" x2="20" y2="12"></line>
+                <line x1="12" y1="18" x2="20" y2="18"></line>
+                <circle cx="6" cy="12" r="2"></circle>
+                <circle cx="10" cy="18" r="2"></circle>
+            </svg>
+        </button>
+    </div>
+
+    <!-- FILTER PANEL (year) -->
+    <div class="filter-panel" id="filter-panel" style="display:none;">
+        <div class="filter-panel-inner">
+            <label class="filter-label">Rok produkcji</label>
+            <div class="filter-row">
+                <input type="number" class="filter-year-input" id="filter-year" placeholder="np. 2020" min="1950" max="2026">
+                <button class="filter-apply-btn" id="filter-apply">Filtruj</button>
+                <button class="filter-clear-btn" id="filter-clear">Wyczysc</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK FILTERS -->
+    <div class="categories-scroll">
+        <button class="category-chip active" data-cat="all">Wszystkie</button>
+        <button class="category-chip" data-cat="Electric" data-type="fuel">&#9889; Elektryczne</button>
+        <button class="category-chip" data-cat="SUV" data-type="body">&#128665; SUV-y</button>
+        <button class="category-chip" data-cat="Sedan" data-type="body">&#128664; Sedany</button>
+        <button class="category-chip" data-cat="Coupe" data-type="body">&#127950; Sportowe</button>
+    </div>
+
+    <!-- SEARCH RESULTS -->
+    <div class="section-header" id="search-results-header" style="display:none;">
+        <h3>Wyniki wyszukiwania</h3>
+        <a href="#" id="clear-search">Wyczysc</a>
+    </div>
+    <div class="car-grid" id="search-results" style="display:none;"></div>
+    <div class="load-more-wrap" id="load-more-wrap" style="display:none;">
+        <button class="load-more-btn" id="load-more-btn">Zaladuj wiecej</button>
+    </div>
+    <div class="search-empty" id="search-empty" style="display:none;">
+        Nie znaleziono wynikow. Sprobuj innej frazy.
+    </div>
+    <div class="search-loading" id="search-loading" style="display:none;">
+        <div class="typing-indicator"><span></span><span></span><span></span></div>
+        <span>Szukam samochodow...</span>
+    </div>
+
+    <!-- DEFAULT OFFERS -->
+    <div class="section-header" id="offers-header">
+        <h3>Oferty dla Ciebie</h3>
+    </div>
+    <div class="car-grid" id="car-cards">
+        <a href="/car/82706" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/BMW 3 Series (G20)" alt="BMW 3 Series" loading="lazy">
+                <button class="tile-fav-btn" data-id="82706" data-name="BMW 3 Series" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="82706" data-name="BMW 3 Series" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 BMW 3 Series</div>
+        </a>
+        <a href="/car/81690" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Ford Mustang" alt="Ford Mustang" loading="lazy">
+                <button class="tile-fav-btn" data-id="81690" data-name="Ford Mustang" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="81690" data-name="Ford Mustang" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Ford Mustang</div>
+        </a>
+        <a href="/car/82047" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Toyota Camry" alt="Toyota Camry" loading="lazy">
+                <button class="tile-fav-btn" data-id="82047" data-name="Toyota Camry" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="82047" data-name="Toyota Camry" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Toyota Camry</div>
+        </a>
+        <a href="/car/82574" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Audi A4" alt="Audi A4" loading="lazy">
+                <button class="tile-fav-btn" data-id="82574" data-name="Audi A4" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="82574" data-name="Audi A4" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Audi A4</div>
+        </a>
+        <a href="/car/82470" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Mercedes-Benz C-Class" alt="Mercedes-Benz C-Class" loading="lazy">
+                <button class="tile-fav-btn" data-id="82470" data-name="Mercedes-Benz C-Class" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="82470" data-name="Mercedes-Benz C-Class" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Mercedes-Benz C-Class</div>
+        </a>
+        <a href="/car/82293" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Volkswagen Golf" alt="Volkswagen Golf" loading="lazy">
+                <button class="tile-fav-btn" data-id="82293" data-name="Volkswagen Golf" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="82293" data-name="Volkswagen Golf" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Volkswagen Golf</div>
+        </a>
+        <a href="/car/83712" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Honda Civic" alt="Honda Civic" loading="lazy">
+                <button class="tile-fav-btn" data-id="83712" data-name="Honda Civic" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="83712" data-name="Honda Civic" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Honda Civic</div>
+        </a>
+        <a href="/car/82838" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Hyundai Tucson" alt="Hyundai Tucson" loading="lazy">
+                <button class="tile-fav-btn" data-id="82838" data-name="Hyundai Tucson" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="82838" data-name="Hyundai Tucson" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Hyundai Tucson</div>
+        </a>
+        <a href="/car/81711" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Mazda CX-5" alt="Mazda CX-5" loading="lazy">
+                <button class="tile-fav-btn" data-id="81711" data-name="Mazda CX-5" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="81711" data-name="Mazda CX-5" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Mazda CX-5</div>
+        </a>
+        <a href="/car/82045" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Porsche 911" alt="Porsche 911" loading="lazy">
+                <button class="tile-fav-btn" data-id="82045" data-name="Porsche 911" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="82045" data-name="Porsche 911" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Porsche 911</div>
+        </a>
+        <a href="/car/81738" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Volvo XC60" alt="Volvo XC60" loading="lazy">
+                <button class="tile-fav-btn" data-id="81738" data-name="Volvo XC60" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="81738" data-name="Volvo XC60" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Volvo XC60</div>
+        </a>
+        <a href="/car/83044" class="car-tile">
+            <div class="car-tile-img-wrap">
+                <img class="car-tile-img" src="/car-image/Kia Sportage" alt="Kia Sportage" loading="lazy">
+                <button class="tile-fav-btn" data-id="83044" data-name="Kia Sportage" data-year="2022" title="Dodaj do ulubionych">&#9825;</button>
+                <button class="tile-compare-btn" data-id="83044" data-name="Kia Sportage" data-year="2022" title="Dodaj do porownania">+</button>
+            </div>
+            <div class="car-tile-label">2022 Kia Sportage</div>
+        </a>
+    </div>
+
+    <!-- COMPARE BAR (floating) -->
+    <div class="compare-bar" id="compare-bar">
+        <span class="compare-bar-text" id="compare-bar-text">Wybrano 0 aut</span>
+        <button class="compare-bar-btn" id="compare-bar-btn">Porownaj</button>
+        <button class="compare-bar-clear" id="compare-bar-clear">&times;</button>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item active">
+            <span class="nav-icon">&#127968;</span>
+            Glowna
+        </a>
+        <a href="/ulubione" class="nav-item">
+            <span class="nav-icon">&#10084;</span>
+            Ulubione
+        </a>
+        <a href="/sprzedaj" class="nav-item nav-item-sell">
+            <span class="nav-icon-plus">+</span>
+            Sprzedaj
+        </a>
+        <a href="/profil" class="nav-item">
+            <span class="nav-icon">&#128100;</span>
+            Profil
+        </a>
+    </nav>
+
+    <!-- CHAT FAB -->
+    <button class="chat-fab" id="chat-fab" title="Zapytaj doradce AI">&#128172;</button>
+
+    <!-- CHAT OVERLAY -->
+    <div class="chat-overlay" id="chat-overlay">
+        <div class="chat-header">
+            <h3>Doradca AI</h3>
+            <button class="chat-close" id="chat-close">&times;</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="msg assistant">
+                Czesc! Jestem Twoim doradca motoryzacyjnym. Moge pomoc Ci wyszukac, porownac i wybrac samochod. Powiedz mi, czego szukasz!
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <textarea class="chat-input" id="chat-input" placeholder="Napisz wiadomosc..." rows="1"></textarea>
+            <button class="chat-send" id="chat-send">&#10148;</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== FAVORITES (localStorage) =====
+        function getFavorites() {
+            try { return JSON.parse(localStorage.getItem('automarket_favorites') || '[]'); }
+            catch(e) { return []; }
+        }
+        function saveFavorites(favs) { localStorage.setItem('automarket_favorites', JSON.stringify(favs)); }
+        function isFavorite(id) { return getFavorites().some(f => f.id === String(id)); }
+        function toggleFavorite(id, name, year) {
+            let favs = getFavorites();
+            const idx = favs.findIndex(f => f.id === String(id));
+            if (idx >= 0) { favs.splice(idx, 1); }
+            else { favs.push({ id: String(id), name: name, year: year }); }
+            saveFavorites(favs);
+        }
+        function updateFavButtons() {
+            document.querySelectorAll('.tile-fav-btn').forEach(btn => {
+                const id = btn.dataset.id;
+                if (isFavorite(id)) { btn.innerHTML = '&#9829;'; btn.classList.add('fav-active'); }
+                else { btn.innerHTML = '&#9825;'; btn.classList.remove('fav-active'); }
+            });
+        }
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.tile-fav-btn');
+            if (btn) {
+                e.preventDefault(); e.stopPropagation();
+                toggleFavorite(btn.dataset.id, btn.dataset.name, btn.dataset.year);
+                updateFavButtons();
+            }
+        });
+
+        // ===== COMPARISON =====
+        function getCompareList() {
+            try { return JSON.parse(sessionStorage.getItem('automarket_compare') || '[]'); }
+            catch(e) { return []; }
+        }
+        function saveCompareList(list) { sessionStorage.setItem('automarket_compare', JSON.stringify(list)); }
+        function isInCompare(id) { return getCompareList().some(c => c.id === String(id)); }
+        function toggleCompare(id, name, year) {
+            let list = getCompareList();
+            const idx = list.findIndex(c => c.id === String(id));
+            if (idx >= 0) { list.splice(idx, 1); }
+            else if (list.length < 3) { list.push({ id: String(id), name: name, year: year }); }
+            else { return; }
+            saveCompareList(list);
+            updateCompareUI();
+        }
+        function updateCompareUI() {
+            const list = getCompareList();
+            const bar = document.getElementById('compare-bar');
+            const text = document.getElementById('compare-bar-text');
+            if (list.length > 0) {
+                bar.style.display = 'flex';
+                text.textContent = 'Wybrano ' + list.length + (list.length === 1 ? ' auto' : ' auta');
+            } else { bar.style.display = 'none'; }
+            document.querySelectorAll('.tile-compare-btn').forEach(btn => {
+                if (isInCompare(btn.dataset.id)) { btn.classList.add('compare-active'); btn.textContent = '✓'; }
+                else { btn.classList.remove('compare-active'); btn.textContent = '+'; }
+            });
+        }
+        document.addEventListener('click', e => {
+            const btn = e.target.closest('.tile-compare-btn');
+            if (btn) {
+                e.preventDefault(); e.stopPropagation();
+                toggleCompare(btn.dataset.id, btn.dataset.name, btn.dataset.year);
+            }
+        });
+        document.getElementById('compare-bar-btn').addEventListener('click', () => {
+            const list = getCompareList();
+            if (list.length >= 2) {
+                const ids = list.map(c => c.id).join(',');
+                window.location.href = '/porownaj?ids=' + ids;
+            }
+        });
+        document.getElementById('compare-bar-clear').addEventListener('click', () => {
+            saveCompareList([]);
+            updateCompareUI();
+        });
+
+        // ===== CHAT =====
+        const chatFab = document.getElementById('chat-fab');
+        const chatOverlay = document.getElementById('chat-overlay');
+        const chatClose = document.getElementById('chat-close');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        let conversationHistory = [];
+        let isLoading = false;
+
+        chatFab.addEventListener('click', () => { chatOverlay.classList.add('open'); chatInput.focus(); });
+        chatClose.addEventListener('click', () => { chatOverlay.classList.remove('open'); });
+
+        function scrollChat() { chatMessages.scrollTop = chatMessages.scrollHeight; }
+
+        function addMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.innerHTML = renderMarkdown(text);
+            chatMessages.appendChild(div);
+            scrollChat();
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg assistant'; div.id = 'typing-msg';
+            div.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(div); scrollChat();
+        }
+        function hideTyping() { const el = document.getElementById('typing-msg'); if (el) el.remove(); }
+
+        function renderMarkdown(text) {
+            let h = text;
+            h = h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            h = h.replace(/^(\|.+\|)\n(\|\s*[-:]+[-| :]*\|)\n((\|.+\|\n?)*)/gm, function(m,hd,sp,bd){
+                const hs=hd.split('|').filter(c=>c.trim()).map(c=>`<th>${c.trim()}</th>`).join('');
+                const rs=bd.trim().split('\n').map(r=>{const cs=r.split('|').filter(c=>c.trim()).map(c=>`<td>${c.trim()}</td>`).join('');return`<tr>${cs}</tr>`;}).join('');
+                return`<table><thead><tr>${hs}</tr></thead><tbody>${rs}</tbody></table>`;
+            });
+            h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+            h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+            h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+            h=h.replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>');
+            h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+            h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');
+            h=h.replace(/`(.+?)`/g,'<code>$1</code>');
+            h=h.replace(/^[-*] (.+)$/gm,'<li>$1</li>');
+            h=h.replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>');
+            h=h.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+            h=h.replace(/\n\n/g,'</p><p>');
+            h=h.replace(/\n/g,'<br>');
+            if(!h.startsWith('<'))h='<p>'+h+'</p>';
+            return h;
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || isLoading) return;
+            isLoading = true; chatSend.disabled = true;
+            chatInput.value = ''; chatInput.style.height = 'auto';
+            addMsg('user', text);
+            conversationHistory.push({role:'user',content:text});
+            showTyping();
+            try {
+                const resp = await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:conversationHistory})});
+                const data = await resp.json(); hideTyping();
+                if(data.error){addMsg('assistant','Blad: '+data.error);}
+                else{addMsg('assistant',data.response);conversationHistory.push({role:'assistant',content:data.response});}
+            } catch(err){hideTyping();addMsg('assistant','Nie udalo sie polaczyc z serwerem.');}
+            isLoading=false; chatSend.disabled=false; chatInput.focus();
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+        chatInput.addEventListener('input', ()=>{chatInput.style.height='auto';chatInput.style.height=Math.min(chatInput.scrollHeight,100)+'px';});
+
+        // ===== FILTER PANEL =====
+        const filterBtn = document.getElementById('filter-btn');
+        const filterPanel = document.getElementById('filter-panel');
+        const filterYear = document.getElementById('filter-year');
+        filterBtn.addEventListener('click', () => {
+            filterPanel.style.display = filterPanel.style.display === 'none' ? 'block' : 'none';
+        });
+        document.getElementById('filter-apply').addEventListener('click', () => {
+            const q = searchInput.value.trim();
+            const y = filterYear.value.trim();
+            performSearch(q, '', '', y);
+            filterPanel.style.display = 'none';
+        });
+        document.getElementById('filter-clear').addEventListener('click', () => {
+            filterYear.value = '';
+            filterPanel.style.display = 'none';
+            const q = searchInput.value.trim();
+            if (q.length >= 2) performSearch(q, '', '', '');
+            else clearSearch();
+        });
+
+        // ===== CATEGORIES =====
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                const cat = chip.dataset.cat;
+                if (cat === 'all') { clearSearch(); }
+                else {
+                    const ft = chip.dataset.type;
+                    if (ft === 'fuel') performSearch('', '', cat, filterYear.value);
+                    else performSearch('', cat, '', filterYear.value);
+                }
+            });
+        });
+
+        // ===== SEARCH =====
+        let searchTimeout = null;
+        const PAGE_SIZE = 12;
+        let currentOffset = 0;
+        let currentSearchParams = null;
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        const searchResultsHeader = document.getElementById('search-results-header');
+        const searchEmpty = document.getElementById('search-empty');
+        const searchLoadingEl = document.getElementById('search-loading');
+        const offersHeader = document.getElementById('offers-header');
+        const defaultCards = document.getElementById('car-cards');
+        const loadMoreWrap = document.getElementById('load-more-wrap');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            const q = searchInput.value.trim();
+            if (q.length < 2) { clearSearch(); return; }
+            searchTimeout = setTimeout(() => performSearch(q, '', '', filterYear.value), 600);
+        });
+        searchInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); clearTimeout(searchTimeout);
+                const q = searchInput.value.trim(); if (q.length >= 2) performSearch(q, '', '', filterYear.value);
+            }
+        });
+
+        document.getElementById('clear-search').addEventListener('click', e => {
+            e.preventDefault(); searchInput.value = '';
+            document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-cat="all"]').classList.add('active');
+            clearSearch();
+        });
+
+        loadMoreBtn.addEventListener('click', () => {
+            if (currentSearchParams) {
+                performSearch(
+                    currentSearchParams.query,
+                    currentSearchParams.bodyType,
+                    currentSearchParams.fuelType,
+                    currentSearchParams.year,
+                    true
+                );
+            }
+        });
+
+        function clearSearch() {
+            searchResults.style.display = 'none'; searchResultsHeader.style.display = 'none';
+            searchEmpty.style.display = 'none'; searchLoadingEl.style.display = 'none';
+            loadMoreWrap.style.display = 'none';
+            offersHeader.style.display = ''; defaultCards.style.display = '';
+            currentOffset = 0; currentSearchParams = null;
+        }
+
+        function makeWikiQuery(make, model) {
+            const map = {
+                'bmw': {'3 series':'BMW 3 Series (G20)','5 series':'BMW 5 Series','x3':'BMW X3','x5':'BMW X5','1 series':'BMW 1 Series','7 series':'BMW 7 Series'},
+                'toyota': {'corolla':'Toyota Corolla','camry':'Toyota Camry','rav4':'Toyota RAV4','yaris':'Toyota Yaris'},
+                'ford': {'mustang':'Ford Mustang','focus':'Ford Focus','bronco':'Ford Bronco','fiesta':'Ford Fiesta'},
+                'honda': {'civic':'Honda Civic','accord':'Honda Accord','cr-v':'Honda CR-V'},
+                'volkswagen': {'golf':'Volkswagen Golf','passat':'Volkswagen Passat','tiguan':'Volkswagen Tiguan','polo':'Volkswagen Polo'},
+                'audi': {'a3':'Audi A3','a4':'Audi A4','a6':'Audi A6','q2':'Audi Q2','q3':'Audi Q3','q5':'Audi Q5','q7':'Audi Q7'},
+                'mercedes-benz': {'c-class':'Mercedes-Benz C-Class','e-class':'Mercedes-Benz E-Class','a-class':'Mercedes-Benz A-Class'},
+                'hyundai': {'tucson':'Hyundai Tucson','i30':'Hyundai i30','kona':'Hyundai Kona'},
+                'kia': {'sportage':'Kia Sportage','ceed':'Kia Ceed','niro':'Kia Niro'},
+                'tesla': {'model 3':'Tesla Model 3','model y':'Tesla Model Y','model s':'Tesla Model S'},
+                'porsche': {'911':'Porsche 911','cayenne':'Porsche Cayenne','macan':'Porsche Macan'},
+                'mazda': {'3':'Mazda3','cx-5':'Mazda CX-5','mx-5':'Mazda MX-5'},
+                'nissan': {'qashqai':'Nissan Qashqai','juke':'Nissan Juke','leaf':'Nissan Leaf'},
+                'volvo': {'xc60':'Volvo XC60','xc40':'Volvo XC40','xc90':'Volvo XC90'},
+                'chevrolet': {'camaro':'Chevrolet Camaro','corvette':'Chevrolet Corvette'},
+            };
+            const mk = make.toLowerCase();
+            const md = model.toLowerCase();
+            if (map[mk] && map[mk][md]) return map[mk][md];
+            return make + ' ' + model;
+        }
+
+        function renderCarTiles(cars) {
+            return cars.map(car => {
+                const wikiQ = makeWikiQuery(car.make, car.model);
+                const detailUrl = car.id ? `/car/${car.id}` : '#';
+                const label = `${car.year || ''} ${car.make} ${car.model}`;
+                return `
+                <a href="${detailUrl}" class="car-tile">
+                    <div class="car-tile-img-wrap">
+                        <img class="car-tile-img" src="/car-image/${encodeURIComponent(wikiQ)}" alt="${car.make} ${car.model}" loading="lazy">
+                        <button class="tile-fav-btn" data-id="${car.id}" data-name="${car.make} ${car.model}" data-year="${car.year || ''}" title="Dodaj do ulubionych">&#9825;</button>
+                        <button class="tile-compare-btn" data-id="${car.id}" data-name="${car.make} ${car.model}" data-year="${car.year || ''}" title="Dodaj do porownania">+</button>
+                    </div>
+                    <div class="car-tile-label">${label}</div>
+                </a>`;
+            }).join('');
+        }
+
+        async function performSearch(query, bodyType, fuelType, year, append) {
+            if (!append) {
+                currentOffset = 0;
+                offersHeader.style.display = 'none'; defaultCards.style.display = 'none';
+                searchEmpty.style.display = 'none'; searchResults.style.display = 'none';
+                searchResultsHeader.style.display = 'none'; loadMoreWrap.style.display = 'none';
+                searchLoadingEl.style.display = 'flex';
+            } else {
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.textContent = 'Ladowanie...';
+            }
+
+            currentSearchParams = { query, bodyType, fuelType, year };
+
+            try {
+                const params = new URLSearchParams();
+                if (query) params.set('q', query);
+                if (bodyType) params.set('body', bodyType);
+                if (fuelType) params.set('fuel', fuelType);
+                if (year) params.set('year', year);
+                params.set('offset', currentOffset);
+                params.set('limit', PAGE_SIZE);
+
+                const resp = await fetch('/search?' + params.toString());
+                if (!resp.ok) throw new Error('Blad serwera: ' + resp.status);
+                const data = await resp.json();
+                searchLoadingEl.style.display = 'none';
+
+                if (data.results && data.results.length > 0) {
+                    searchResultsHeader.style.display = '';
+                    searchResults.style.display = '';
+                    const html = renderCarTiles(data.results);
+                    if (append) {
+                        searchResults.insertAdjacentHTML('beforeend', html);
+                    } else {
+                        searchResults.innerHTML = html;
+                    }
+                    currentOffset += data.results.length;
+
+                    if (data.has_more) {
+                        loadMoreWrap.style.display = '';
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.textContent = 'Zaladuj wiecej';
+                    } else {
+                        loadMoreWrap.style.display = 'none';
+                    }
+
+                    updateFavButtons();
+                    updateCompareUI();
+                } else if (!append) {
+                    searchEmpty.style.display = 'block';
+                    searchEmpty.textContent = 'Nie znaleziono wynikow. Sprobuj innej frazy.';
+                }
+            } catch (err) {
+                searchLoadingEl.style.display = 'none';
+                if (!append) {
+                    searchEmpty.style.display = 'block';
+                    searchEmpty.textContent = 'Blad wyszukiwania: ' + err.message + '. Sprobuj ponownie.';
+                }
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.textContent = 'Zaladuj wiecej';
+            }
+        }
+
+        // ===== THEME TOGGLE =====
+        const themeToggle = document.getElementById('theme-toggle');
+        function updateThemeIcon() {
+            themeToggle.innerHTML = document.body.classList.contains('dark') ? '&#9728;' : '&#127769;';
+        }
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('automarket_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeIcon();
+        });
+        updateThemeIcon();
+
+        // Init on page load
+        updateFavButtons();
+        updateCompareUI();
+    </script>
+</body>
+</html>

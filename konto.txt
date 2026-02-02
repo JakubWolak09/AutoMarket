@@ -1,0 +1,229 @@
+EKRAN: PROFIL UŻYTKOWNIKA
+1️⃣ OGÓLNY UKŁAD I STYL
+
+Jasny motyw (light mode)
+
+Centralne wyrównanie treści
+
+Dużo „white space”
+
+Karty z delikatnym cieniem
+
+Kolor główny: niebieski
+
+Mobile-first
+
+2️⃣ GÓRNY PASEK (TOP BAR)
+⬅️ Przycisk powrotu
+
+Ikona strzałki w lewo
+
+Nawigacja wstecz (stack-based)
+
+🏷 Tytuł ekranu
+
+Tekst: „Profil”
+
+Wyśrodkowany
+
+Średnia grubość fontu
+
+⚙️ Ikona ustawień
+
+Po prawej stronie
+
+Skrót do „Ustawienia konta”
+
+3️⃣ SEKCJA UŻYTKOWNIKA (HERO)
+👤 Avatar
+
+Okrągły
+
+Ilustracja (placeholder)
+
+Przycisk edycji (ikona ołówka) w prawym dolnym rogu
+
+Akcja:
+
+zmiana zdjęcia
+
+upload → storage → CDN
+
+🧾 Dane użytkownika
+
+Imię i nazwisko: Alex Johnson
+
+Status: „Członek od 2023”
+
+Dane dynamiczne z backendu
+
+4️⃣ STATYSTYKI UŻYTKOWNIKA
+
+Trzy kafelki w jednej linii:
+
+📦 OGŁOSZENIA
+
+Liczba: 2
+
+Ilość aktywnych ofert użytkownika
+
+⭐ ZAPISANE
+
+Liczba: 14
+
+Ulubione auta
+
+👁 WYŚWIETLENIA
+
+Liczba: 350
+
+Suma odsłon ofert użytkownika
+
+👉 Klikalne → szczegóły
+
+5️⃣ KARTA „ASYSTENT AI” (KLUCZOWA)
+🤖 Sekcja premium
+
+Duża, wyróżniona karta (niebieskie tło)
+
+Ikona robota
+
+Tekst:
+
+Asystent AI
+
+Podtytuł: „Zarządzaj preferencjami i historią”
+
+Funkcja:
+
+Wejście do panelu AI:
+
+preferencje zakupowe
+
+historia rozmów
+
+cele użytkownika
+
+personalizacja rekomendacji
+
+6️⃣ SEKCJA „AKTYWNOŚĆ”
+📌 Moje ogłoszenia
+
+Ikona auta
+
+Badge: „1 Akcja” (np. kończy się ważność)
+
+Przejście do listy ofert
+
+❤️ Zapisane auta
+
+Lista ulubionych
+
+Synchronizacja konto ↔ urządzenie
+
+💬 Wiadomości
+
+Ikona czatu
+
+Badge: 3
+
+Skrzynka wiadomości:
+
+sprzedawcy
+
+AI
+
+system
+
+7️⃣ SEKCJA „KONTO”
+⚙️ Ustawienia konta
+
+Dane osobowe
+
+Hasło
+
+Email
+
+Telefon
+
+Preferencje języka
+
+🔔 Powiadomienia
+
+Push
+
+Email
+
+SMS
+
+Alerty cenowe (AI)
+
+🔐 Prywatność i bezpieczeństwo
+
+Zmiana hasła
+
+2FA
+
+Sesje aktywne
+
+Historia logowań
+
+Zgody RODO
+
+8️⃣ WYLOGOWANIE
+🚪 Przycisk „Wyloguj się”
+
+Kolor czerwony
+
+Potwierdzenie modalem
+
+Czyszczenie sesji + tokenów
+
+9️⃣ STOPKA
+
+Wersja aplikacji: 2.4.0
+
+Przydatne do debugowania / supportu
+
+🔽 DOLNY PASEK NAWIGACJI
+🏠 Główna
+🔍 Szukaj
+➕ Dodaj
+💬 Wiadomości
+👤 Profil (aktywny)
+🧠 LOGIKA BACKENDOWA (IMPLIKACJE)
+
+Ten ekran oznacza, że system ma:
+
+User Service
+
+Auth (JWT / OAuth)
+
+Statystyki użytkownika
+
+AI Profile Store
+
+Notification Service
+
+Messaging Service
+
+Favorites Service
+
+Ads Service
+
+🤖 ASYSTENT AI – CO TU ROBI KONKRETNIE
+
+Na tym ekranie AI:
+
+zna historię użytkownika
+
+zna zapisane auta
+
+zna budżet
+
+zna intencje
+
+Przykłady:
+
+„Chcesz, żebym znalazł podobne auta do zapisanych?”
+„Cena Twojego BMW spadła o 3%”

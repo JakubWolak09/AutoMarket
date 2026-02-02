@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.carqueryapi.com)",
+      "Bash(.venvScriptspython.exe app.py)",
+      "Bash(..venvScriptspython.exe app.py)",
+      "Bash(C:/Users/Admin/Desktop/praktyki/apka/.venv/Scripts/python.exe:*)",
+      "Bash(taskkill:*)",
+      "Bash(start http://127.0.0.1:5000)",
+      "WebSearch",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(ping:*)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\Admin\\\\Desktop\\\\praktyki\\\\apka\")",
+      "Bash(findstr:*)",
+      "Bash(timeout /t 3)",
+      "Bash(python -c:*)",
+      "Bash(grep:*)"
+    ]
+  }
+}
